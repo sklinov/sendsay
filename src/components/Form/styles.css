@@ -1,0 +1,79 @@
+.form__container {
+    width: 800px;
+    background-color: white;
+    padding: 32px;
+}
+.form__container * {
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.form__header {
+    font-weight: 400;
+}
+
+.form__group {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.form__group .form__input:first-of-type {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.form__group .form__input:last-of-type {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.form__group .form__input:not(:last-child) {
+    border-right: none;
+}
+
+.form__label {
+    font-size: 16px;
+    color: #666666;
+    margin-top: 5px;
+    line-height: 2;
+}
+
+.form__label-blue {
+    color: #0055FB;
+    padding-left: 5px;
+}
+
+.form__input {
+    border: 1px solid #DDDDDD;
+    border-collapse: collapse;
+    font-family: 'SF Pro';
+    font-size: 18px;
+    height: 40px;
+    padding: 11px;
+    width:370px;
+}
+
+.form__input-fullwidth {
+    width: 740px;
+}
+
+.form__input-textarea {
+    height: 140px;
+    resize: none;
+}
+
+.form__link {
+    cursor: pointer;
+}
+
+.form__link:hover {
+    cursor: pointer;
+    padding: 5px;
+    border: 2px solid #45A5FF;
+    border-radius: 7px;
+}
+
+.form__filebutton {
+    display: none;
+}
