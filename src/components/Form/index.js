@@ -16,11 +16,11 @@ export default class Form extends Component {
 
         }
     }
+
     handleChange = (e) => {
         e.preventDefault();
         this.setState({ [e.target.name] : e.target.value });
     }
-
 
     render() {
         const { fromName, fromEmail, toName, toEmail, subject, messageText } = this.state;
@@ -28,7 +28,7 @@ export default class Form extends Component {
             <div data-test="form" className="form__container">
                 <h1 className="form__header">{form.header}</h1>
                 <form>
-                    <div className="form__group">
+                    <div className="form__group" data-test="form__group">
                         <label htmlFor="fromName"
                                className="form__label">
                                {form.fromLabel}
@@ -49,7 +49,7 @@ export default class Form extends Component {
                             value={fromEmail} 
                             onChange={this.handleChange} />
                     </div>
-                    <div className="form__group">
+                    <div className="form__group" data-test="form__group">
                         <label htmlFor="toName"
                               className="form__label">
                               {form.toLabel}
@@ -70,7 +70,7 @@ export default class Form extends Component {
                             value={toEmail} 
                             onChange={this.handleChange} />
                     </div>
-                    <div className="form__group">
+                    <div className="form__group" data-test="form__group">
                         <label htmlFor="subject" 
                                 className="form__label">
                                 {form.subjectLabel}
@@ -84,7 +84,7 @@ export default class Form extends Component {
                             value={subject} 
                             onChange={this.handleChange} />
                     </div>
-                    <div className="form__group">
+                    <div className="form__group" data-test="form__group">
                         <label htmlFor="messageText"
                                 className="form__label">
                                 {form.messageLabel}
@@ -97,7 +97,7 @@ export default class Form extends Component {
                             value={messageText} 
                             onChange={this.handleChange} />
                     </div>
-                    <div className="form__group">
+                    <div className="form__group" data-test="form__group">
                         <label htmlFor="files" 
                                     className="form__label">
                                     <img src={paperclip} alt="paperclip" />
