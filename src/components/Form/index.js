@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
+import DragDropFiles from '../DragDropFiles'
+import uuid from 'uuid'
 import { form } from '../../languages/ru'
 import './styles.css'
 import paperclip from '../../imgs/paperclip.svg'
+import trash from '../../imgs/trash.svg'
 
 export default class Form extends Component {
     constructor(props) {
@@ -12,8 +15,8 @@ export default class Form extends Component {
             toName: "",
             toEmail: "",
             subject: "",
-            messageText: ""
-
+            messageText: "",
+            files: [],
         }
     }
 
@@ -22,10 +25,44 @@ export default class Form extends Component {
         this.setState({ [e.target.name] : e.target.value });
     }
 
+    addFiles = (e) => {
+        var file = e.target.files[0];
+        this.setState({files: [...this.state.files, file]});
+    }
+
+    handleDragDropFile = (files) => {        
+        this.setState({files: [...this.state.files, ...files]})
+    }
+
+    deleteFile = (e, fileToDelete) => {
+        e.preventDefault();
+        const { files } = this.state;
+        var newFiles = files.filter(file => file!== fileToDelete);
+        this.setState({files: newFiles});
+    }
+
+    processFileName = (filename) => {
+        const max_filename_length = 20;
+        if(filename.length > max_filename_length) {
+            let end = filename.slice(-4);
+            let start = filename.slice(0,13);
+            return start + '...' + end;
+        }
+        else {
+            return filename;
+        }   
+    }
+
+    submitForm = (e) => {
+        e.preventDefault();
+    }
+
     render() {
-        const { fromName, fromEmail, toName, toEmail, subject, messageText } = this.state;
+        const { fromName, fromEmail, toName, toEmail, subject, messageText, files } = this.state;
         return (
             <div data-test="form" className="form__container">
+            <DragDropFiles handleDrop={this.handleDragDropFile}>
+            <div>
                 <h1 className="form__header">{form.header}</h1>
                 <form>
                     <div className="form__group" data-test="form__group">
@@ -98,6 +135,28 @@ export default class Form extends Component {
                             onChange={this.handleChange} />
                     </div>
                     <div className="form__group" data-test="form__group">
+                        {    
+                            files.length > 0 && 
+                                <div className="form__files">
+                                {
+                                    files.map(file => {
+                                        return (
+                                            <div className="form__filecontainer" key={uuid.v4()}>
+                                                <img src={paperclip} className="form__paperclip-desaturated" alt="paperclip" />
+                                                <span className="form__filename">
+                                                    {this.processFileName(file.name)}
+                                                </span>
+                                                <span className="form__filedelete"
+                                                      onClick={(e) => this.deleteFile(e, file)}>
+                                                    <img src={trash} alt="Удалить" />
+                                                    Удалить
+                                                </span>
+                                            </div>
+                                        )
+                                    })
+                                }
+                                </div>   
+                        }
                         <label htmlFor="files" 
                                     className="form__label">
                                     <img src={paperclip} alt="paperclip" />
@@ -110,11 +169,21 @@ export default class Form extends Component {
                             placeholder={form.subjectPlaceholder}
                             id="files"
                             name="files"
+                            onChange={this.addFiles}
                         />
                         </label>
                         
                     </div>
+                    <div className="form__group" data-test="form__group">
+                        <button
+                            className="form__button"
+                            onClick={this.submitForm}>
+                            {form.buttonSubmitLabel}
+                        </button>
+                    </div>
                 </form>
+            </div>
+            </DragDropFiles>
             </div>
         )
     }

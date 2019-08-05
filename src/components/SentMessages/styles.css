@@ -1,0 +1,6 @@
+.messages__container > * {
+    text-align: left;
+}
+.messages__header {
+    font-weight: 400;
+}

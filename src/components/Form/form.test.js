@@ -20,7 +20,7 @@ describe('Form ---',() => {
         });
         it('has 5 form groups',()=> {
             const wrapper = findByTestAttr(component, 'form__group');
-            expect(wrapper.length).toEqual(5);
+            expect(wrapper.length).toEqual(6);
         });
     });
     

@@ -10,5 +10,19 @@ export const form = {
     emailPlaceholder: 'Email',
     subjectPlaceholder: 'Введите тему сообщения',
     messagePlaceholder: 'Введите текст сообщения',
-    attach: 'Прикрепить файл'
+    attach: 'Прикрепить файл',
+    buttonSubmitLabel: 'Отправить'
+}
+
+export const msgLabels = {
+    header: 'Отправленные сообщения',
+    dateLabel: 'Дата',
+    subjectLabel: 'Тема',
+    statusLabel: 'Статус',
+    noneText: 'Сообщения еще не отправлялись'
+}
+
+export const dragdrop = {
+    heading: 'Бросайте файлы сюда, я ловлю',
+    text: 'Мы принимаем картинки (jpg, png, gif), офисные файлы (doc, xls, pdf) и zip-архивы. Размеры файла до 5 МБ'
 }
