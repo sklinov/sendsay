@@ -5,6 +5,7 @@ import { form, errors } from '../../languages/ru'
 import './styles.css'
 import paperclip from '../../imgs/paperclip.svg'
 import trash from '../../imgs/trash.svg'
+import { keyToTestName } from 'jest-snapshot/build/utils';
 
 export default class Form extends Component {
     constructor(props) {
@@ -24,13 +25,18 @@ export default class Form extends Component {
                 toEmail: false,
                 subject: false,
                 messageText: false,
-            } 
+            },
+            formIsValid: false 
         }
     }
 
     handleChange = (e) => {
         e.preventDefault();
-        this.setState({ [e.target.name] : e.target.value });
+        const value = e.target.value.trim();
+        const { validationErrors } = this.state;
+        this.setState({ validationErrors: {...validationErrors, [e.target.name]: false} }); 
+        this.setState({ [e.target.name] : value });
+        this.validateForm();
     }
 
     addFiles = (e) => {
@@ -82,8 +88,36 @@ export default class Form extends Component {
                     this.setState({ validationErrors: {...validationErrors, [name]: errors.emailNotValid} }); 
                 }
                 break;
+            case name.match(/\S*(subject)/i) && name:
+                if(value.length === 0) {
+                    this.setState({ validationErrors: {...validationErrors, [name]: errors.subjectEmpty} }); 
+                }
+                break;
+            case name.match(/\S*(text)/i) && name:
+                if(value.length === 0) {
+                    this.setState({ validationErrors: {...validationErrors, [name]: errors.textEmpty} }); 
+                }
+                break;
             default:
                 console.log('DEFAULT',value);
+        }
+    }
+
+    validateForm = () => {
+        const { fromName, fromEmail, toName, toEmail, subject, messageText, validationErrors } = this.state;
+        if(
+            fromName.length > 0 &&
+            fromEmail.length > 0 &&
+            toName.length > 0 &&
+            toEmail.length > 0 &&
+            subject.length > 0 &&
+            messageText.length > 0 &&
+            Object.values(validationErrors).every(error => error === false)
+        ) {
+            this.setState({formIsValid: true}); 
+        }
+        else {
+            this.setState({formIsValid: false}); 
         }
     }
 
@@ -92,7 +126,7 @@ export default class Form extends Component {
     }
 
     render() {
-        const { fromName, fromEmail, toName, toEmail, subject, messageText, files } = this.state;
+        const { fromName, fromEmail, toName, toEmail, subject, messageText, files, validationErrors, formIsValid } = this.state;
         return (
             <div data-test="form" className="form__container">
             <DragDropFiles handleDrop={this.handleDragDropFile}>
@@ -124,6 +158,10 @@ export default class Form extends Component {
                             onBlur={this.validateField} 
                         />
                     </div>
+                    <div className="form__errorcontainer">
+                        {<div className="form__error">{validationErrors.fromName}</div>}
+                        {<div className="form__error">{validationErrors.fromEmail}</div>}
+                    </div>
                     <div className="form__group" data-test="form__group">
                         <label htmlFor="toName"
                               className="form__label">
@@ -149,6 +187,10 @@ export default class Form extends Component {
                             onBlur={this.validateField} 
                         />
                     </div>
+                    <div className="form__errorcontainer">
+                        {<div className="form__error">{validationErrors.toName}</div>}
+                        {<div className="form__error">{validationErrors.toEmail}</div>}
+                    </div>
                     <div className="form__group" data-test="form__group">
                         <label htmlFor="subject" 
                                 className="form__label">
@@ -165,6 +207,9 @@ export default class Form extends Component {
                             onBlur={this.validateField} 
                         />
                     </div>
+                    <div className="form__errorcontainer">
+                        {<div className="form__error">{validationErrors.subject}</div>}
+                    </div>
                     <div className="form__group" data-test="form__group">
                         <label htmlFor="messageText"
                                 className="form__label">
@@ -179,6 +224,9 @@ export default class Form extends Component {
                             onChange={this.handleChange}
                             onBlur={this.validateField} 
                         />
+                    </div>
+                    <div className="form__errorcontainer">
+                        {<div className="form__error">{validationErrors.messageText}</div>}
                     </div>
                     <div className="form__group" data-test="form__group">
                         {    
@@ -223,7 +271,9 @@ export default class Form extends Component {
                     <div className="form__group" data-test="form__group">
                         <button
                             className="form__button"
-                            onClick={this.submitForm}>
+                            onClick={this.submitForm}
+                            disabled={!formIsValid}
+                        >
                             {form.buttonSubmitLabel}
                         </button>
                     </div>
