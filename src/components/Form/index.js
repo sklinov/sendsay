@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import DragDropFiles from '../DragDropFiles'
 import uuid from 'uuid'
-import { form } from '../../languages/ru'
+import { form, errors } from '../../languages/ru'
 import './styles.css'
 import paperclip from '../../imgs/paperclip.svg'
 import trash from '../../imgs/trash.svg'
@@ -17,6 +17,14 @@ export default class Form extends Component {
             subject: "",
             messageText: "",
             files: [],
+            validationErrors: {
+                fromName: false,
+                fromEmail: false,
+                toName: false,
+                toEmail: false,
+                subject: false,
+                messageText: false,
+            } 
         }
     }
 
@@ -53,6 +61,32 @@ export default class Form extends Component {
         }   
     }
 
+    validateField = (e) => {
+        e.preventDefault();
+        const { value, name } = e.target;
+        const { validationErrors } = this.state;
+        switch(name) {
+            case name.match(/\S*(Name)/i) && name :
+                if(value.length === 0) {
+                    this.setState({ validationErrors: {...validationErrors, [name]: errors.nameEmpty} }); 
+                }
+                else if(value.length <3) {
+                    this.setState({ validationErrors: {...validationErrors, [name]: errors.nameTooShort} }); 
+                }
+                break;
+            case name.match(/\S*(Email)/i) && name:
+                if(value.length === 0) {
+                    this.setState({ validationErrors: {...validationErrors, [name]: errors.emailEmpty} }); 
+                }
+                else if(!value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
+                    this.setState({ validationErrors: {...validationErrors, [name]: errors.emailNotValid} }); 
+                }
+                break;
+            default:
+                console.log('DEFAULT',value);
+        }
+    }
+
     submitForm = (e) => {
         e.preventDefault();
     }
@@ -77,14 +111,18 @@ export default class Form extends Component {
                             placeholder={form.namePlaceholder}
                             name="fromName"
                             value={fromName} 
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                            onBlur={this.validateField} 
+                        />
                         <input 
                             type="email"
                             className="form__input"  
                             placeholder={form.emailPlaceholder}
                             name="fromEmail"
                             value={fromEmail} 
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                            onBlur={this.validateField} 
+                        />
                     </div>
                     <div className="form__group" data-test="form__group">
                         <label htmlFor="toName"
@@ -98,14 +136,18 @@ export default class Form extends Component {
                             placeholder={form.namePlaceholder}
                             name="toName"
                             value={toName} 
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                            onBlur={this.validateField} 
+                        />
                         <input 
                             type="email"
                             className="form__input"  
                             placeholder={form.emailPlaceholder}
                             name="toEmail"
                             value={toEmail} 
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                            onBlur={this.validateField} 
+                        />
                     </div>
                     <div className="form__group" data-test="form__group">
                         <label htmlFor="subject" 
@@ -119,7 +161,9 @@ export default class Form extends Component {
                             placeholder={form.subjectPlaceholder}
                             name="subject"
                             value={subject} 
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                            onBlur={this.validateField} 
+                        />
                     </div>
                     <div className="form__group" data-test="form__group">
                         <label htmlFor="messageText"
@@ -132,7 +176,9 @@ export default class Form extends Component {
                             placeholder={form.messagePlaceholder}
                             name="messageText"
                             value={messageText} 
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                            onBlur={this.validateField} 
+                        />
                     </div>
                     <div className="form__group" data-test="form__group">
                         {    
