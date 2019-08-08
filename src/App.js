@@ -11,7 +11,7 @@ const store = createStore();
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" data-test="App">
       <Provider store={store}>
         <Logo />
         <Form />
