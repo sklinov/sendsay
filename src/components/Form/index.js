@@ -5,6 +5,7 @@ import { form, errors } from '../../languages/ru'
 import './styles.css'
 import paperclip from '../../imgs/paperclip.svg'
 import trash from '../../imgs/trash.svg'
+import sendMessage from './sendMessage'
 
 export default class Form extends Component {
     constructor(props) {
@@ -31,12 +32,20 @@ export default class Form extends Component {
 
     handleChange = (e) => {
         e.preventDefault();
-        const value = e.target.value.trim();
+        const value = this.leftSideTrim(e.target.value);
         const { validationErrors } = this.state;
         this.setState({ validationErrors: {...validationErrors, [e.target.name]: false} }); 
         this.setState({ [e.target.name] : value });
         this.validateForm();
     }
+
+    leftSideTrim = (value) => {
+        if(value === null) 
+        { 
+            return value;
+        }
+        return value.replace(/^\s+/g, '');
+      }
 
     addFiles = (e) => {
         var files = [];
@@ -168,6 +177,17 @@ export default class Form extends Component {
 
     submitForm = (e) => {
         e.preventDefault();
+        const message = {
+            fromName: this.state.fromName,
+            fromEmail: this.state.fromEmail,
+            toName: this.state.toName,
+            toEmail: this.state.toEmail,
+            subject: this.state.subject,
+            messageText: this.state.messageText,
+            files: this.state.files,
+        };
+        var result = sendMessage(message);
+        console.log('Form result:', result);
     }
 
     
