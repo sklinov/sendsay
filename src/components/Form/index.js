@@ -71,7 +71,6 @@ export default class Form extends Component {
 
         const fileSizes = this.state.files.map(file => file.size);
         var totalSize = fileSizes.reduce( (total, size) => total+size, 0); 
-        console.log(files);
         var checkedfiles = files.filter(file => {
             if(fileTypes.indexOf(file.type) !== -1 &&
                file.size <=sizeLimit && 
@@ -84,7 +83,6 @@ export default class Form extends Component {
                 alert(`Невозможно загрузить ${file.name}. Проверьте размер (< 5Мб) и тип файла.`);
             }
         })
-        console.log(checkedfiles);
         return checkedfiles;
     }
 
@@ -146,7 +144,7 @@ export default class Form extends Component {
                 }
                 break;
             default:
-                console.log('DEFAULT',value);
+                break;
         }
     }
 

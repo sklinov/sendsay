@@ -6,3 +6,4 @@ export function sendMessage(payload) {
     payload
   };
 }
+
