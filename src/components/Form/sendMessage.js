@@ -1,7 +1,8 @@
-import Sendsay from 'sendsay-api'
+//import Sendsay from 'sendsay-api'
+import Sendsay from 'sendsay-api/dist/sendsay-api.cjs';
 import { sendsayConfig } from '../../config/index'
 
-export default function sendMessage(message) {
+export default async function sendMessage (message) {
     var sendsay = new Sendsay();
 
     sendsay.login({
@@ -34,8 +35,8 @@ export default function sendMessage(message) {
           }          
       );
       req.then(function(res) {
-        var settings = res.list;
-        console.log(settings);
+        console.log(res);
+        return res;
       });
     })
     

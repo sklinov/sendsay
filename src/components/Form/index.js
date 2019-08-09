@@ -186,11 +186,26 @@ export default class Form extends Component {
             messageText: this.state.messageText,
             files: this.state.files,
         };
-        var result = sendMessage(message);
-        console.log('Form result:', result);
+        var submit = new Promise(() => sendMessage(message) );
+        submit.then(result => {
+            console.log('SUBMIT result:',result);
+        },
+        (error) => {
+            console.log('REQUEST NOT FULFILLED', error);
+        });
     }
 
-    
+    componentDidMount() {
+        const initialState = {
+            fromName: "Сергей",
+            fromEmail: "me@sklinov.pro",
+            toName: "Вася",
+            toEmail: "cifili@mailnowapp.com",
+            subject: "Тестовая тема",
+            messageText: "Тестовый текст",
+        }
+        this.setState(initialState);
+    }
 
     render() {
         const { fromName, fromEmail, toName, toEmail, subject, messageText, files, validationErrors, formIsValid } = this.state;
