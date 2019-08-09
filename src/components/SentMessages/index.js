@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { getMessages } from '../../redux/actions/messageActions'
 import './styles.css'
 import { msgLabels } from '../../languages/ru'
 
-function SentMessages(props) {
-    const { sentMessages } = props;
+class SentMessages extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {}
+    }
+
+    componentWillMount() {
+        let payload = { id: 1};
+        this.props.getMessages(payload);
+    }
+
+    render() {
+    const { sentMessages } = this.props;
     return (
         <div className="messages__container" data-test="sentmessages">
             <h1 className="messages__header">{msgLabels.header}</h1>
@@ -41,6 +54,7 @@ function SentMessages(props) {
             }
         </div>
     )
+    }
 }
 
-export default SentMessages
+export default connect(null, { getMessages })(SentMessages)

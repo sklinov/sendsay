@@ -1,13 +1,24 @@
 import { takeEvery, put } from 'redux-saga/effects';
 
-const sendMessageToAPI = function* (action) {
-    const { payload } = action.payload;
+const messageSentSaga = function* (action) {
+    const { payload } = action;
+    console.log('MESSAGE SENT SAGA MAGIC GOES HERE', payload); 
+    //DO THE MAGIC
+    yield put({type: 'MESSAGE_SENT_ASYNC'});
+}
+
+const getMessagesFromAPI = function* (action) {
+    const { payload } = action;
     console.log('SAGA MAGIC GOES HERE', payload); 
     //DO THE MAGIC
-    yield put({type: 'SEND_MESSAGE_ASYNC'});
+    yield put({type: 'GET_MESSAGES_ASYNC'});
 }
 
 
-export function* watchSendMessage() {
-    yield takeEvery('SEND_MESSAGE', sendMessageToAPI);
+export function* watchMessageSent() {
+    yield takeEvery('MESSAGE_SENT', messageSentSaga);
+}
+
+export function* watchGetMessages() {
+    yield takeEvery('GET_MESSAGES', getMessagesFromAPI);
 }

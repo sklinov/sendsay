@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { messageSent } from '../../redux/actions/messageActions'
 import DragDropFiles from '../DragDropFiles'
 import uuid from 'uuid'
 import { form, errors } from '../../languages/ru'
@@ -7,7 +9,7 @@ import paperclip from '../../imgs/paperclip.svg'
 import trash from '../../imgs/trash.svg'
 import sendMessage from './sendMessage'
 
-export default class Form extends Component {
+class Form extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -186,8 +188,9 @@ export default class Form extends Component {
             messageText: this.state.messageText,
             files: this.state.files,
         };
-        var submit = new Promise(() => sendMessage(message) );
-        submit.then(result => {
+        //var submit = new Promise(() => sendMessage(message) );
+        sendMessage(message).then(result => {
+            this.props.messageSent(result);
             console.log('SUBMIT result:',result);
         },
         (error) => {
@@ -370,3 +373,5 @@ export default class Form extends Component {
         )
     }
 }
+
+export default connect(null, {messageSent})(Form)

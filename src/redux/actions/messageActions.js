@@ -1,8 +1,16 @@
-export const SEND_MESSAGE = "SEND_MESSAGE";
+export const MESSAGE_SENT = "MESSAGE_SENT";
+export const GET_MESSAGES = "GET_MESSAGES";
 
-export function sendMessage(payload) {
+export function messageSent(payload) {
   return {
-    type: SEND_MESSAGE,
+    type: MESSAGE_SENT,
+    payload
+  };
+}
+
+export function getMessages(payload) {
+  return {
+    type: GET_MESSAGES,
     payload
   };
 }

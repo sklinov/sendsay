@@ -1,4 +1,5 @@
-import { SEND_MESSAGE } from '../../actions/messageActions';
+import { MESSAGE_SENT } from '../../actions/messageActions';
+import { GET_MESSAGES } from '../../actions/messageActions';
 
 const initialState = {
     messages : [],
@@ -7,7 +8,14 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case SEND_MESSAGE: 
+        case MESSAGE_SENT: 
+        {
+            console.log(action.payload);
+            return (
+                {...state, messages:[...state.messages, action.payload] }
+            )
+        }
+        case GET_MESSAGES: 
         {
             console.log(action.payload);
             return (
