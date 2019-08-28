@@ -1,14 +1,15 @@
-//import Sendsay from 'sendsay-api'
 import Sendsay from 'sendsay-api/dist/sendsay-api.cjs';
-import { sendsayConfig } from '../../config/index'
+import { sendsayConfig } from '../config/index'
 
-export default function sendMessage(message) {
-    return new Promise((resolve,reject) => {
+export default function getMessages(message) {
+    return new Promise((resolve) => {
       var sendsay = new Sendsay();
       sendsay.login({
         login: sendsayConfig.login, 
         password: sendsayConfig.password,  
-      }).then(function() {
+      }).then(function(login_res) {
+        var log = login_res;
+        console.log(log);
         var req = sendsay.request(
           {
               "action" : "issue.send.test",
@@ -35,11 +36,12 @@ export default function sendMessage(message) {
             }          
         );
         req.then(function(res) {
-          //console.log(res);
+          console.log(res);
           resolve(res);
         });
   
     })
   }) 
 }
+
 

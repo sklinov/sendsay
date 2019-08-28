@@ -7,7 +7,6 @@ import { form, errors } from '../../languages/ru'
 import './styles.css'
 import paperclip from '../../imgs/paperclip.svg'
 import trash from '../../imgs/trash.svg'
-import sendMessage from './sendMessage'
 
 class Form extends Component {
     constructor(props) {
@@ -71,6 +70,7 @@ class Form extends Component {
         const fileTypes = [
             'image/png',
             'image/jpg',
+            'image/jpeg',
             'image/gif',
             'application/zip',
             'application/pdf',
@@ -81,7 +81,8 @@ class Form extends Component {
         ];
 
         const fileSizes = this.state.files.map(file => file.size);
-        var totalSize = fileSizes.reduce( (total, size) => total+size, 0); 
+        var totalSize = fileSizes.reduce( (total, size) => total+size, 0);
+        console.log(totalSize); 
         var checkedfiles = files.filter(file => {
             if(fileTypes.indexOf(file.type) !== -1 &&
                file.size <=sizeLimit && 
@@ -91,7 +92,8 @@ class Form extends Component {
                 return file;
             }
             else {
-                alert(`Невозможно загрузить ${file.name}. Проверьте размер (< 5Мб) и тип файла.`);
+                console.log(file, fileTypes.indexOf(file.type), file.type, file.size);
+                alert(`Невозможно загрузить ${file.name}. Проверьте размер (< 5Мб) и тип файла. ${file.type}, ${file.size}`);
             }
         })
         return checkedfiles;
@@ -188,14 +190,15 @@ class Form extends Component {
             messageText: this.state.messageText,
             files: this.state.files,
         };
+        this.props.messageSent(message);
         //var submit = new Promise(() => sendMessage(message) );
-        sendMessage(message).then(result => {
-            this.props.messageSent(result);
-            console.log('SUBMIT result:',result);
-        },
-        (error) => {
-            console.log('REQUEST NOT FULFILLED', error);
-        });
+        // sendMessage(message).then(result => {
+        //     this.props.messageSent(result);
+        //     console.log('SUBMIT result:',result);
+        // },
+        // (error) => {
+        //     console.log('REQUEST NOT FULFILLED', error);
+        // });
     }
 
     componentDidMount() {
@@ -203,7 +206,7 @@ class Form extends Component {
             fromName: "Сергей",
             fromEmail: "me@sklinov.pro",
             toName: "Вася",
-            toEmail: "cifili@mailnowapp.com",
+            toEmail: "mitisipoy@netmail3.net",
             subject: "Тестовая тема",
             messageText: "Тестовый текст",
         }

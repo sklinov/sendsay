@@ -10,10 +10,11 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case MESSAGE_SENT: 
         {
-            console.log(action.payload);
-            return (
-                {...state, messages:[...state.messages, action.payload] }
-            )
+            return ( state ) 
+            // console.log(action.payload);
+            // return (
+            //     {...state, messages:[...state.messages, action.payload] }
+            // )
         }
         case GET_MESSAGES: 
         {
