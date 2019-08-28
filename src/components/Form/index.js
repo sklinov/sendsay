@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { messageSent } from '../../redux/actions/messageActions'
+import { sendMessage } from '../../redux/actions/messageActions'
 import DragDropFiles from '../DragDropFiles'
 import uuid from 'uuid'
 import { form, errors } from '../../languages/ru'
@@ -94,6 +94,7 @@ class Form extends Component {
             else {
                 console.log(file, fileTypes.indexOf(file.type), file.type, file.size);
                 alert(`Невозможно загрузить ${file.name}. Проверьте размер (< 5Мб) и тип файла. ${file.type}, ${file.size}`);
+                return null;
             }
         })
         return checkedfiles;
@@ -190,15 +191,7 @@ class Form extends Component {
             messageText: this.state.messageText,
             files: this.state.files,
         };
-        this.props.messageSent(message);
-        //var submit = new Promise(() => sendMessage(message) );
-        // sendMessage(message).then(result => {
-        //     this.props.messageSent(result);
-        //     console.log('SUBMIT result:',result);
-        // },
-        // (error) => {
-        //     console.log('REQUEST NOT FULFILLED', error);
-        // });
+        this.props.sendMessage(message);
     }
 
     componentDidMount() {
@@ -206,7 +199,7 @@ class Form extends Component {
             fromName: "Сергей",
             fromEmail: "me@sklinov.pro",
             toName: "Вася",
-            toEmail: "mitisipoy@netmail3.net",
+            toEmail: "vasya@simplemail.top",
             subject: "Тестовая тема",
             messageText: "Тестовый текст",
         }
@@ -377,4 +370,4 @@ class Form extends Component {
     }
 }
 
-export default connect(null, {messageSent})(Form)
+export default connect(null, {sendMessage})(Form)

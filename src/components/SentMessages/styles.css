@@ -4,3 +4,35 @@
 .messages__header {
     font-weight: 400;
 }
+
+table {
+    border-collapse: collapse;
+    line-height: 2.5;
+    width: 740px;
+}
+
+.table__head {
+    border-collapse: separate;
+    border-bottom: 1px solid #DDDDDD;   
+}
+
+.table__headcells {
+    color: #949494;
+    font-size: 16px;
+}
+
+.table__datecell {
+    width: 120px;
+}
+
+.table__subjectcell {
+    max-width: 490px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table__statuscell {
+    width: 130px;
+    text-align: right;
+}

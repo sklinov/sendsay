@@ -1,17 +1,29 @@
-export const MESSAGE_SENT = "MESSAGE_SENT";
-export const GET_MESSAGES = "GET_MESSAGES";
+import { SEND_MESSAGE, GET_STATUS } from './types'
+import sendMessageSendsay from '../../utils/sendMessage'
+import getStatusSendsay from '../../utils/getStatus'
 
-export function messageSent(payload) {
-  return {
-    type: MESSAGE_SENT,
-    payload
-  };
+export const sendMessage = (message) => (dispatch) => {
+  sendMessageSendsay(message)
+  .then((res) => dispatch(
+    {
+      type: SEND_MESSAGE,
+      message: {
+        date: new Date(),
+        subject: message.subject,
+        trackId: res['track.id']
+      }
+    }
+  ))
 }
 
-export function getMessages(payload) {
-  return {
-    type: GET_MESSAGES,
-    payload
-  };
+export const getStatus = (message) => (dispatch) => {
+  getStatusSendsay(message)
+  .then((res) => dispatch(
+    {
+      type: GET_STATUS,
+      trackId: message.trackId,
+      status: res.obj.status
+    }
+  ))
 }
 

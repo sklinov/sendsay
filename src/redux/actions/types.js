@@ -1,4 +1,2 @@
-export const types = {
-    SEND_MESSAGE: 'sendMessage',
-    GET_MESSAGE: 'getMessage'
-};
+export const SEND_MESSAGE = 'SEND_MESSAGE';
+export const GET_STATUS = 'GET_STATUS';

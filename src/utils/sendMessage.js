@@ -1,8 +1,8 @@
 import Sendsay from 'sendsay-api/dist/sendsay-api.cjs';
 import { sendsayConfig } from '../config/index'
-import toBase64 from './toBase64'
+//import toBase64 from './toBase64'
 
-export default function sendMessage(message) {
+export default function sendMessageSendsay(message) {
   return new Promise((resolve) => {
     var sendsay = new Sendsay();
     var filesToUpload = [];
@@ -10,19 +10,19 @@ export default function sendMessage(message) {
       login: sendsayConfig.login, 
       password: sendsayConfig.password,  
     })
-    .then(function() {
-      filesToUpload = message.files.map(file => {
-        var fileContent = toBase64(file);
+    // .then(function() {
+    //   filesToUpload = message.files.map(file => {
+    //     var fileContent = toBase64(file);
          
-        var fileToUpload = {
-                              name: file.name,
-                              content: fileContent,
-                              encoding: 'base64'
-                            };
-        console.log(fileToUpload);
-        return fileToUpload; 
-      })
-    })
+    //     var fileToUpload = {
+    //                           name: file.name,
+    //                           content: fileContent,
+    //                           encoding: 'base64'
+    //                         };
+    //     console.log(fileToUpload);
+    //     return fileToUpload; 
+    //   })
+    // })
     .then(function() {
       var req = sendsay.request(
         {
@@ -42,6 +42,7 @@ export default function sendMessage(message) {
           }          
       );
       req.then(function(res) {
+        console.log(res);
         resolve(res);
       });
 

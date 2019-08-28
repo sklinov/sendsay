@@ -1,27 +1,43 @@
-import { MESSAGE_SENT } from '../../actions/messageActions';
-import { GET_MESSAGES } from '../../actions/messageActions';
+import { SEND_MESSAGE, GET_STATUS } from '../../actions/types'
+
 
 const initialState = {
-    messages : [],
-    message: { }
+    messages : [
+        // {
+        //     date: new Date(),
+        //     subject: 'Слишком длинная для восприятия человеческим мозгом тема сообщения отправленная через службу sendsay',
+        //     trackId: 111
+        // }
+    ],
 }
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case MESSAGE_SENT: 
+        case SEND_MESSAGE: 
         {
-            return ( state ) 
-            // console.log(action.payload);
-            // return (
-            //     {...state, messages:[...state.messages, action.payload] }
-            // )
+            // Have to get date, track.id, subject, session(?)
+            return {
+                ...state,
+                messages: [
+                    ...state.messages,
+                    action.message
+                ]
+            }; 
         }
-        case GET_MESSAGES: 
+        case GET_STATUS: 
         {
-            console.log(action.payload);
-            return (
-                state
-            )
+            // Have to get track.id, obj.status
+            var messagesUpdated = state.messages;
+            messagesUpdated.forEach(message => {
+                if(message.trackId === action.trackId) {
+                    message.status = action.status;
+                }
+                return message;
+            })
+            return {
+                ...state,
+                messages: messagesUpdated 
+            };
         }
         default:
             return state;
