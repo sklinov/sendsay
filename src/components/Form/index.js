@@ -1,12 +1,21 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { sendMessage } from '../../redux/actions/messageActions'
+import { sendMessage, newMessage } from '../../redux/actions/messageActions'
 import DragDropFiles from '../DragDropFiles'
 import uuid from 'uuid'
 import { form, errors } from '../../languages/ru'
 import './styles.css'
 import paperclip from '../../imgs/paperclip.svg'
 import trash from '../../imgs/trash.svg'
+
+const initialState = {
+    fromName: "Сергей",
+    fromEmail: "me@sklinov.pro",
+    toName: "Вася",
+    toEmail: "vasya@simplemail.top",
+    subject: "Тестовая тема",
+    messageText: "Тестовый текст",
+}
 
 class Form extends Component {
     constructor(props) {
@@ -27,9 +36,11 @@ class Form extends Component {
                 subject: false,
                 messageText: false,
             },
-            formIsValid: false 
+            formIsValid: false,
         }
     }
+
+
 
     handleChange = (e) => {
         e.preventDefault();
@@ -81,8 +92,7 @@ class Form extends Component {
         ];
 
         const fileSizes = this.state.files.map(file => file.size);
-        var totalSize = fileSizes.reduce( (total, size) => total+size, 0);
-        console.log(totalSize); 
+        var totalSize = fileSizes.reduce( (total, size) => total+size, 0); 
         var checkedfiles = files.filter(file => {
             if(fileTypes.indexOf(file.type) !== -1 &&
                file.size <=sizeLimit && 
@@ -193,181 +203,197 @@ class Form extends Component {
         };
         this.props.sendMessage(message);
     }
+    clearForm = (e) => {
+        e.preventDefault();
+        this.setState(initialState,  this.props.newMessage())
+    }
 
     componentDidMount() {
-        const initialState = {
-            fromName: "Сергей",
-            fromEmail: "me@sklinov.pro",
-            toName: "Вася",
-            toEmail: "vasya@simplemail.top",
-            subject: "Тестовая тема",
-            messageText: "Тестовый текст",
-        }
+        
         this.setState(initialState);
     }
 
     render() {
         const { fromName, fromEmail, toName, toEmail, subject, messageText, files, validationErrors, formIsValid } = this.state;
-        return (
-            <div data-test="form" className="form__container">
-                <DragDropFiles handleDrop={this.handleDragDropFile}>
-                    <div>
-                        <h1 className="form__header">{form.header}</h1>
-                        <form>
-                            <div className="form__group" data-test="form__group">
-                                <label htmlFor="fromName"
-                                    className="form__label">
-                                    {form.fromLabel}
-                                </label>
-                                <br />
-                                <input 
-                                    type="text"
-                                    className="form__input" 
-                                    placeholder={form.namePlaceholder}
-                                    name="fromName"
-                                    value={fromName} 
-                                    onChange={this.handleChange}
-                                    onBlur={this.validateField}
-                                    data-test="fromName" 
-                                />
-                                <input 
-                                    type="email"
-                                    className="form__input"  
-                                    placeholder={form.emailPlaceholder}
-                                    name="fromEmail"
-                                    value={fromEmail} 
-                                    onChange={this.handleChange}
-                                    onBlur={this.validateField}
-                                    data-test="fromEmail" 
-                                />
-                            </div>
-                            <div className="form__errorcontainer">
-                                {<div className="form__error">{validationErrors.fromName}</div>}
-                                {<div className="form__error">{validationErrors.fromEmail}</div>}
-                            </div>
-                            <div className="form__group" data-test="form__group">
-                                <label htmlFor="toName"
-                                    className="form__label">
-                                    {form.toLabel}
-                                </label>
-                                <br />
-                                <input 
-                                    type="text"
-                                    className="form__input"  
-                                    placeholder={form.namePlaceholder}
-                                    name="toName"
-                                    value={toName} 
-                                    onChange={this.handleChange}
-                                    onBlur={this.validateField} 
-                                    data-test="toName"
-                                />
-                                <input 
-                                    type="email"
-                                    className="form__input"  
-                                    placeholder={form.emailPlaceholder}
-                                    name="toEmail"
-                                    value={toEmail} 
-                                    onChange={this.handleChange}
-                                    onBlur={this.validateField}
-                                    data-test="toEmail" 
-                                />
-                            </div>
-                            <div className="form__errorcontainer">
-                                {<div className="form__error">{validationErrors.toName}</div>}
-                                {<div className="form__error">{validationErrors.toEmail}</div>}
-                            </div>
-                            <div className="form__group" data-test="form__group">
-                                <label htmlFor="subject" 
+        if(this.props.isSent) {
+            form.messageQueuedExtra.replace('***', toEmail);
+            return (
+                <div data-test="form" className="form__sent" onClick={this.clearForm}>
+                    <h1 className="form__header">
+                        {form.messagequeued}
+                    </h1>
+                    <p className="form__sentp">
+                        {form.messageQueuedExtra}
+                    </p>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div data-test="form" className="form__container">
+                    <DragDropFiles handleDrop={this.handleDragDropFile}>
+                        <div>
+                            <h1 className="form__header">{form.header}</h1>
+                            <form>
+                                <div className="form__group" data-test="form__group">
+                                    <label htmlFor="fromName"
                                         className="form__label">
-                                        {form.subjectLabel}
-                                </label>
-                                <br />
-                                <input 
-                                    type="text"
-                                    className="form__input form__input-fullwidth"  
-                                    placeholder={form.subjectPlaceholder}
-                                    name="subject"
-                                    value={subject} 
-                                    onChange={this.handleChange}
-                                    onBlur={this.validateField} 
-                                />
-                            </div>
-                            <div className="form__errorcontainer">
-                                {<div className="form__error">{validationErrors.subject}</div>}
-                            </div>
-                            <div className="form__group" data-test="form__group">
-                                <label htmlFor="messageText"
+                                        {form.fromLabel}
+                                    </label>
+                                    <br />
+                                    <input 
+                                        type="text"
+                                        className="form__input" 
+                                        placeholder={form.namePlaceholder}
+                                        name="fromName"
+                                        value={fromName} 
+                                        onChange={this.handleChange}
+                                        onBlur={this.validateField}
+                                        data-test="fromName" 
+                                    />
+                                    <input 
+                                        type="email"
+                                        className="form__input"  
+                                        placeholder={form.emailPlaceholder}
+                                        name="fromEmail"
+                                        value={fromEmail} 
+                                        onChange={this.handleChange}
+                                        onBlur={this.validateField}
+                                        data-test="fromEmail" 
+                                    />
+                                </div>
+                                <div className="form__errorcontainer">
+                                    {<div className="form__error">{validationErrors.fromName}</div>}
+                                    {<div className="form__error">{validationErrors.fromEmail}</div>}
+                                </div>
+                                <div className="form__group" data-test="form__group">
+                                    <label htmlFor="toName"
                                         className="form__label">
-                                        {form.messageLabel}
-                                </label>
-                            <br />
-                                <textarea 
-                                    className="form__input form__input-fullwidth form__input-textarea"
-                                    placeholder={form.messagePlaceholder}
-                                    name="messageText"
-                                    value={messageText} 
-                                    onChange={this.handleChange}
-                                    onBlur={this.validateField} 
-                                />
-                            </div>
-                            <div className="form__errorcontainer">
-                                {<div className="form__error">{validationErrors.messageText}</div>}
-                            </div>
-                            <div className="form__group" data-test="form__group">
-                                {    
-                                    files !== undefined && files.length > 0 && 
-                                        <div className="form__files">
-                                        {
-                                            files.map(file => {
-                                                return (
-                                                    <div className="form__filecontainer" key={uuid.v4()}>
-                                                        <img src={paperclip} className="form__paperclip-desaturated" alt="paperclip" />
-                                                        <span className="form__filename" title={file.name}>
-                                                            {this.processFileName(file.name)}
-                                                        </span>
-                                                        <span className="form__filedelete"
-                                                            onClick={(e) => this.deleteFile(e, file)}>
-                                                            <img src={trash} alt="Удалить" />
-                                                            Удалить
-                                                        </span>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                        </div>   
-                                }
-                                <label htmlFor="files" 
+                                        {form.toLabel}
+                                    </label>
+                                    <br />
+                                    <input 
+                                        type="text"
+                                        className="form__input"  
+                                        placeholder={form.namePlaceholder}
+                                        name="toName"
+                                        value={toName} 
+                                        onChange={this.handleChange}
+                                        onBlur={this.validateField} 
+                                        data-test="toName"
+                                    />
+                                    <input 
+                                        type="email"
+                                        className="form__input"  
+                                        placeholder={form.emailPlaceholder}
+                                        name="toEmail"
+                                        value={toEmail} 
+                                        onChange={this.handleChange}
+                                        onBlur={this.validateField}
+                                        data-test="toEmail" 
+                                    />
+                                </div>
+                                <div className="form__errorcontainer">
+                                    {<div className="form__error">{validationErrors.toName}</div>}
+                                    {<div className="form__error">{validationErrors.toEmail}</div>}
+                                </div>
+                                <div className="form__group" data-test="form__group">
+                                    <label htmlFor="subject" 
                                             className="form__label">
-                                            <img src={paperclip} alt="paperclip" />
-                                            <span className="form__label form__label-blue form__link">
-                                                {form.attach}
-                                            </span> 
-                                <input 
-                                    type="file"
-                                    className="form__filebutton"  
-                                    placeholder={form.subjectPlaceholder}
-                                    id="files"
-                                    name="files"
-                                    onChange={this.addFiles}
-                                />
-                                </label>
-                                
-                            </div>
-                            <div className="form__group" data-test="form__group">
-                                <button
-                                    className="form__button"
-                                    onClick={this.submitForm}
-                                    disabled={!formIsValid}
-                                >
-                                    {form.buttonSubmitLabel}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </DragDropFiles>
-            </div>
-        )
+                                            {form.subjectLabel}
+                                    </label>
+                                    <br />
+                                    <input 
+                                        type="text"
+                                        className="form__input form__input-fullwidth"  
+                                        placeholder={form.subjectPlaceholder}
+                                        name="subject"
+                                        value={subject} 
+                                        onChange={this.handleChange}
+                                        onBlur={this.validateField} 
+                                    />
+                                </div>
+                                <div className="form__errorcontainer">
+                                    {<div className="form__error">{validationErrors.subject}</div>}
+                                </div>
+                                <div className="form__group" data-test="form__group">
+                                    <label htmlFor="messageText"
+                                            className="form__label">
+                                            {form.messageLabel}
+                                    </label>
+                                <br />
+                                    <textarea 
+                                        className="form__input form__input-fullwidth form__input-textarea"
+                                        placeholder={form.messagePlaceholder}
+                                        name="messageText"
+                                        value={messageText} 
+                                        onChange={this.handleChange}
+                                        onBlur={this.validateField} 
+                                    />
+                                </div>
+                                <div className="form__errorcontainer">
+                                    {<div className="form__error">{validationErrors.messageText}</div>}
+                                </div>
+                                <div className="form__group" data-test="form__group">
+                                    {    
+                                        files !== undefined && files.length > 0 && 
+                                            <div className="form__files">
+                                            {
+                                                files.map(file => {
+                                                    return (
+                                                        <div className="form__filecontainer" key={uuid.v4()}>
+                                                            <img src={paperclip} className="form__paperclip-desaturated" alt="paperclip" />
+                                                            <span className="form__filename" title={file.name}>
+                                                                {this.processFileName(file.name)}
+                                                            </span>
+                                                            <span className="form__filedelete"
+                                                                onClick={(e) => this.deleteFile(e, file)}>
+                                                                <img src={trash} alt="Удалить" />
+                                                                Удалить
+                                                            </span>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                            </div>   
+                                    }
+                                    <label htmlFor="files" 
+                                                className="form__label">
+                                                <img src={paperclip} alt="paperclip" />
+                                                <span className="form__label form__label-blue form__link">
+                                                    {form.attach}
+                                                </span> 
+                                    <input 
+                                        type="file"
+                                        className="form__filebutton"  
+                                        placeholder={form.subjectPlaceholder}
+                                        id="files"
+                                        name="files"
+                                        onChange={this.addFiles}
+                                    />
+                                    </label>
+                                    
+                                </div>
+                                <div className="form__group" data-test="form__group">
+                                    <button
+                                        className="form__button"
+                                        onClick={this.submitForm}
+                                        disabled={!formIsValid}
+                                    >
+                                        {form.buttonSubmitLabel}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </DragDropFiles>
+                </div>
+            )
+        }
     }
 }
 
-export default connect(null, {sendMessage})(Form)
+const mapStateToProps = state => ({
+    isSent: state.messages.isSent
+})
+
+export default connect(mapStateToProps, {sendMessage, newMessage})(Form)

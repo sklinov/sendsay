@@ -1,14 +1,9 @@
-import { SEND_MESSAGE, GET_STATUS } from '../../actions/types'
+import { SEND_MESSAGE, GET_STATUS, NEW_MESSAGE } from '../../actions/types'
 
 
 const initialState = {
-    messages : [
-        // {
-        //     date: new Date(),
-        //     subject: 'Слишком длинная для восприятия человеческим мозгом тема сообщения отправленная через службу sendsay',
-        //     trackId: 111
-        // }
-    ],
+    messages : [],
+    isSent: false
 }
 
 export default (state = initialState, action) => {
@@ -21,7 +16,8 @@ export default (state = initialState, action) => {
                 messages: [
                     ...state.messages,
                     action.message
-                ]
+                ],
+                isSent: true
             }; 
         }
         case GET_STATUS: 
@@ -38,6 +34,13 @@ export default (state = initialState, action) => {
                 ...state,
                 messages: messagesUpdated 
             };
+        }
+        case NEW_MESSAGE: 
+        {
+            return {
+                ...state,
+                isSent: false
+            }
         }
         default:
             return state;

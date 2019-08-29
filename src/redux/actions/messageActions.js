@@ -1,4 +1,4 @@
-import { SEND_MESSAGE, GET_STATUS } from './types'
+import { SEND_MESSAGE, GET_STATUS, NEW_MESSAGE } from './types'
 import sendMessageSendsay from '../../utils/sendMessage'
 import getStatusSendsay from '../../utils/getStatus'
 
@@ -25,5 +25,11 @@ export const getStatus = (message) => (dispatch) => {
       status: res.obj.status
     }
   ))
+}
+
+export const newMessage = () => (dispatch) => {
+  dispatch({
+    type: NEW_MESSAGE
+  })
 }
 

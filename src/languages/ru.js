@@ -11,7 +11,9 @@ export const form = {
     subjectPlaceholder: 'Введите тему сообщения',
     messagePlaceholder: 'Введите текст сообщения',
     attach: 'Прикрепить файл',
-    buttonSubmitLabel: 'Отправить'
+    buttonSubmitLabel: 'Отправить',
+    messagequeued: 'Сообщение поставлено в очередь на отправку',
+    messageQueuedExtra: 'Совсем скоро сообщение вылетит из сервера, и будет двигаться в сторону почты получателя «***» со скоростью электронов.',
 }
 
 export const msgLabels = {
