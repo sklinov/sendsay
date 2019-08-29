@@ -10,21 +10,19 @@ function toBase64(file) {
     })    
 }
 
-export default function filesToBase64(files) {
-    return new Promise((resolve) => {
-        var filesInBase64 = [];
-        files.forEach(file => {
-            toBase64(file)
-            .then((res) => {
-                var fileObj = {
-                    name: file.name,
-                    content: res,
-                    encoding: "base64"
-                }
-                filesInBase64.push(fileObj);
-            })
-        })
-        console.log(filesInBase64);
-        resolve(filesInBase64);
-    })
+export default async function filesToBase64(files) {
+    var filesInBase64 = [];
+    await Promise.all(files.map(async (file) => {
+        const contents = await toBase64(file);
+        var fileObj = {
+            name: file.name,
+            content: contents,
+            encoding: "base64"
+        }
+        filesInBase64.push(fileObj);
+    }));
+    return filesInBase64;
 } 
+
+
+
