@@ -14,8 +14,6 @@ export default function sendMessageSendsay(message) {
     })
     .then(() => filesToBase64(message.files)
     .then((filesToUpload) => {
-      console.log(filesToUpload)
-
       var fullMessage = {
         "action" : "issue.send.test",
         "letter" : {
@@ -25,22 +23,12 @@ export default function sendMessageSendsay(message) {
           "to.name" : message.toName,
           "message": { "text" : message.messageText },
           "attaches": filesToUpload ,
-          // "attaches": [
-          //   {
-          //     "name": "dummyfile.png",
-          //     "encoding":"base64",
-          //     "content": fileCont
-          //   }
-          // ],
         },
         "sendwhen": "test",
         "mca": [
           message.toEmail,
         ]
       };
-
-      
-      console.log('full message',fullMessage);
       var req = sendsay.request(fullMessage);
       req.then(function(res) {
         console.log(res);

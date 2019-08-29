@@ -11,7 +11,8 @@ export const sendMessage = (message) => (dispatch) => {
         date: new Date(),
         subject: message.subject,
         trackId: res['track.id']
-      }
+      },
+      prevToEmail: message.toEmail
     }
   ))
 }

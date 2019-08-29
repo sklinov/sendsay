@@ -40,8 +40,6 @@ class Form extends Component {
         }
     }
 
-
-
     handleChange = (e) => {
         e.preventDefault();
         const value = this.leftSideTrim(e.target.value);
@@ -203,27 +201,29 @@ class Form extends Component {
         };
         this.props.sendMessage(message);
     }
+
     clearForm = (e) => {
         e.preventDefault();
-        this.setState(initialState,  this.props.newMessage())
+        this.setState(initialState, this.props.newMessage())
     }
 
     componentDidMount() {
-        
         this.setState(initialState);
     }
 
     render() {
         const { fromName, fromEmail, toName, toEmail, subject, messageText, files, validationErrors, formIsValid } = this.state;
         if(this.props.isSent) {
-            form.messageQueuedExtra.replace('***', toEmail);
+            const regex = /[*][*][*]/
+            let message = form.messageQueuedExtra.replace(regex, this.props.prevToEmail);
+            
             return (
                 <div data-test="form" className="form__sent" onClick={this.clearForm}>
                     <h1 className="form__header">
                         {form.messagequeued}
                     </h1>
                     <p className="form__sentp">
-                        {form.messageQueuedExtra}
+                        {message}
                     </p>
                 </div>
             )
@@ -393,7 +393,8 @@ class Form extends Component {
 }
 
 const mapStateToProps = state => ({
-    isSent: state.messages.isSent
+    isSent: state.messages.isSent,
+    prevToEmail: state.messages.prevToEmail
 })
 
 export default connect(mapStateToProps, {sendMessage, newMessage})(Form)
