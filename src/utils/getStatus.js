@@ -7,15 +7,15 @@ export default function getStatusSendsay(message) {
       sendsay.login({
         login: sendsayConfig.login, 
         password: sendsayConfig.password,  
-      }).then(function(login_res) {
+      }).then((login_res) => {
         var req = sendsay.request(
           {
             "action" : "track.get",
             "id": message.trackId
           }          
         );
-        req.then(function(res) {
-          console.log(res);
+        req.then((res) => {
+          //console.log(res);
           resolve(res);
         });
   

@@ -74,7 +74,7 @@ class SentMessages extends Component {
                                         <tr data-test="message_item" key={message.trackId}>
                                             <td className="table__datecell">{message.date.toLocaleString('ru-RU',  {day: 'numeric', month: 'long'}) }</td>
                                             <td className="table__subjectcell">{message.subject}</td>
-                                            <td className="table__statuscell">{this.processStatus(message.status)}</td>
+                                            <td className="table__statuscell">{() => this.processStatus(message.status)}</td>
                                         </tr>
                                     )
                                 })

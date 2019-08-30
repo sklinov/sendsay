@@ -3,7 +3,9 @@ import { connect } from 'react-redux'
 import { sendMessage, newMessage } from '../../redux/actions/messageActions'
 import DragDropFiles from '../DragDropFiles'
 import uuid from 'uuid'
-import { form, errors } from '../../languages/ru'
+import { leftSideTrim, validateField } from '../../utils/form'
+import { checkFilesExtAndSize, processFileName } from '../../utils/file'
+import { form } from '../../languages/ru'
 import './styles.css'
 import paperclip from '../../imgs/paperclip.svg'
 import trash from '../../imgs/trash.svg'
@@ -38,24 +40,26 @@ class Form extends Component {
             },
             formIsValid: false,
         }
+        this.validateField = validateField.bind(this, this.state)
+        this.checkFilesExtAndSize = checkFilesExtAndSize.bind(this, this.state)
     }
 
     handleChange = (e) => {
         e.preventDefault();
-        const value = this.leftSideTrim(e.target.value);
+        const value = leftSideTrim(e.target.value);
         const { validationErrors } = this.state;
         this.setState({ validationErrors: {...validationErrors, [e.target.name]: false} }); 
         this.setState({ [e.target.name] : value });
         this.validateForm();
     }
 
-    leftSideTrim = (value) => {
-        if(value === null) 
-        { 
-            return value;
-        }
-        return value.replace(/^\s+/g, '');
-      }
+ 
+
+    handleDragDropFile = (fileList) => {
+        const files = [...fileList];
+        var checkedFiles = this.checkFilesExtAndSize(files);
+        this.addFilesToState(checkedFiles);        
+    }
 
     addFiles = (e) => {
         var files = [];
@@ -65,47 +69,6 @@ class Form extends Component {
             var checkedFiles = this.checkFilesExtAndSize(files);
             this.addFilesToState(checkedFiles);
         }
-    }
-
-    handleDragDropFile = (fileList) => {
-        const files = [...fileList];
-        var checkedFiles = this.checkFilesExtAndSize(files);
-        this.addFilesToState(checkedFiles);        
-    }
-
-    checkFilesExtAndSize = (files) => {
-        const sizeLimit = 5242880;
-        const totalSizeLimit = 20971520;
-        const fileTypes = [
-            'image/png',
-            'image/jpg',
-            'image/jpeg',
-            'image/gif',
-            'application/zip',
-            'application/pdf',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/msword'
-        ];
-
-        const fileSizes = this.state.files.map(file => file.size);
-        var totalSize = fileSizes.reduce( (total, size) => total+size, 0); 
-        var checkedfiles = files.filter(file => {
-            if(fileTypes.indexOf(file.type) !== -1 &&
-               file.size <=sizeLimit && 
-               file.size+totalSize <= totalSizeLimit)
-            {   
-                totalSize +=file.size;
-                return file;
-            }
-            else {
-                console.log(file, fileTypes.indexOf(file.type), file.type, file.size);
-                alert(`Невозможно загрузить ${file.name}. Проверьте размер (< 5Мб) и тип файла. ${file.type}, ${file.size}`);
-                return null;
-            }
-        })
-        return checkedfiles;
     }
 
     addFilesToState = (files) => {
@@ -122,53 +85,6 @@ class Form extends Component {
         this.setState({files: newFiles});
     }
 
-    processFileName = (filename) => {
-        const max_filename_length = 20;
-        if(filename.length > max_filename_length) {
-            let end = filename.slice(-4);
-            let start = filename.slice(0,13);
-            return start + '...' + end;
-        }
-        else {
-            return filename;
-        }   
-    }
-
-    validateField = (e) => {
-        e.preventDefault();
-        const { value, name } = e.target;
-        const { validationErrors } = this.state;
-        switch(name) {
-            case name.match(/\S*(Name)/i) && name :
-                if(value.length === 0) {
-                    this.setState({ validationErrors: {...validationErrors, [name]: errors.nameEmpty} }); 
-                }
-                else if(value.length <3) {
-                    this.setState({ validationErrors: {...validationErrors, [name]: errors.nameTooShort} }); 
-                }
-                break;
-            case name.match(/\S*(Email)/i) && name:
-                if(value.length === 0) {
-                    this.setState({ validationErrors: {...validationErrors, [name]: errors.emailEmpty} }); 
-                }
-                else if(!value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
-                    this.setState({ validationErrors: {...validationErrors, [name]: errors.emailNotValid} }); 
-                }
-                break;
-            case name.match(/\S*(subject)/i) && name:
-                if(value.length === 0) {
-                    this.setState({ validationErrors: {...validationErrors, [name]: errors.subjectEmpty} }); 
-                }
-                break;
-            case name.match(/\S*(text)/i) && name:
-                if(value.length === 0) {
-                    this.setState({ validationErrors: {...validationErrors, [name]: errors.textEmpty} }); 
-                }
-                break;
-            default:
-                break;
-        }
-    }
 
     validateForm = () => {
         const { fromName, fromEmail, toName, toEmail, subject, messageText, validationErrors } = this.state;
@@ -248,7 +164,7 @@ class Form extends Component {
                                         name="fromName"
                                         value={fromName} 
                                         onChange={this.handleChange}
-                                        onBlur={this.validateField}
+                                        onBlur={(e) => this.validateField(e)}
                                         data-test="fromName" 
                                     />
                                     <input 
@@ -258,7 +174,7 @@ class Form extends Component {
                                         name="fromEmail"
                                         value={fromEmail} 
                                         onChange={this.handleChange}
-                                        onBlur={this.validateField}
+                                        onBlur={(e) => this.validateField(e)}
                                         data-test="fromEmail" 
                                     />
                                 </div>
@@ -279,7 +195,7 @@ class Form extends Component {
                                         name="toName"
                                         value={toName} 
                                         onChange={this.handleChange}
-                                        onBlur={this.validateField} 
+                                        onBlur={(e) => this.validateField(e)} 
                                         data-test="toName"
                                     />
                                     <input 
@@ -289,7 +205,7 @@ class Form extends Component {
                                         name="toEmail"
                                         value={toEmail} 
                                         onChange={this.handleChange}
-                                        onBlur={this.validateField}
+                                        onBlur={(e) => this.validateField(e)}
                                         data-test="toEmail" 
                                     />
                                 </div>
@@ -310,7 +226,7 @@ class Form extends Component {
                                         name="subject"
                                         value={subject} 
                                         onChange={this.handleChange}
-                                        onBlur={this.validateField} 
+                                        onBlur={(e) => this.validateField(e)} 
                                     />
                                 </div>
                                 <div className="form__errorcontainer">
@@ -328,7 +244,7 @@ class Form extends Component {
                                         name="messageText"
                                         value={messageText} 
                                         onChange={this.handleChange}
-                                        onBlur={this.validateField} 
+                                        onBlur={(e) => this.validateField(e)} 
                                     />
                                 </div>
                                 <div className="form__errorcontainer">
@@ -344,12 +260,12 @@ class Form extends Component {
                                                         <div className="form__filecontainer" key={uuid.v4()}>
                                                             <img src={paperclip} className="form__paperclip-desaturated" alt="paperclip" />
                                                             <span className="form__filename" title={file.name}>
-                                                                {this.processFileName(file.name)}
+                                                                { processFileName(file.name)}
                                                             </span>
                                                             <span className="form__filedelete"
                                                                 onClick={(e) => this.deleteFile(e, file)}>
-                                                                <img src={trash} alt="Удалить" />
-                                                                Удалить
+                                                                <img src={trash} alt={form.delete} />
+                                                                {form.delete}
                                                             </span>
                                                         </div>
                                                     )
