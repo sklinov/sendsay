@@ -1,6 +1,6 @@
 import { SEND_MESSAGE, GET_STATUS, NEW_MESSAGE } from '../../actions/types'
 
-const initialState = {
+export const initialState = {
     messages : [],
     isSent: false,
     prevToEmail: ''

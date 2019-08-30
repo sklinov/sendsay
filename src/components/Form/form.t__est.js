@@ -1,13 +1,33 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { findByTestAttr} from '../../utils/index';
-import Form from './index';
+import { Form } from './index';
 import { errors } from '../../languages/ru' 
 
 const setup = (props={}) => {
     const component = shallow(<Form {...props} />);
     return component;
 }
+
+const thunk = ({ dispatch, getState }) => next => action => {
+    if (typeof action === 'function') {
+      return action(dispatch, getState)
+    }
+  
+    return next(action)
+}
+
+const create = () => {
+    const store = {
+      getState: jest.fn(() => ({})),
+      dispatch: jest.fn()
+    }
+    const next = jest.fn()
+  
+    const invoke = action => thunk(store)(next)(action)
+  
+    return { store, next, invoke }
+  }
 
 describe('Form ---',() => {
     let component;

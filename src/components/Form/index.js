@@ -10,13 +10,22 @@ import './styles.css'
 import paperclip from '../../imgs/paperclip.svg'
 import trash from '../../imgs/trash.svg'
 
+// const initialState = {
+//     fromName: "Сергей",
+//     fromEmail: "me@sklinov.pro",
+//     toName: "Вася",
+//     toEmail: "vasya@simplemail.top",
+//     subject: "Тестовая тема",
+//     messageText: "Тестовый текст",
+// }
+
 const initialState = {
-    fromName: "Сергей",
-    fromEmail: "me@sklinov.pro",
-    toName: "Вася",
-    toEmail: "vasya@simplemail.top",
-    subject: "Тестовая тема",
-    messageText: "Тестовый текст",
+    fromName: "",
+    fromEmail: "",
+    toName: "",
+    toEmail: "",
+    subject: "",
+    messageText: "",
 }
 
 class Form extends Component {
