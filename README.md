@@ -1,7 +1,7 @@
 # <a name="russian"></a> Sendsay 
 [English version](#english)
 
-Одностраничное приложение для отправки сообщений по электронной почте с возможностью прикрепить файлы к сообщению, использующее JavaScript-клиент API `Sendsay` в режиме тестового доступа.
+Одностраничное приложение для отправки сообщений по электронной почте с возможностью прикрепить файлы к сообщению, использующее [JavaScript-клиент](https://github.com/sendsay-ru/sendsay-api-js) API `Sendsay` в режиме тестового доступа.
 Приложение использует `React`, `Redux`, `Redux-Thunk`, юнит и интеграционные тесты используют `Jest` и `Enzyme`.
 ## Основные команды
 ### Установка модулей-зависимостей
@@ -26,7 +26,7 @@ yarn build
 # <a name="english"></a>Sendsay 
 [Русская версия](#russian)
 
-Single-page application for sending messages via e-mail with files attached, using JavaScript-client for `Sendsay` API in test mode. The app utilizes `React`, `Redux`, `Redux-Thunk`, unit and integration tests based on `Jest` and `Enzyme`.
+Single-page application for sending messages via e-mail with files attached, using [JavaScript client](https://github.com/sendsay-ru/sendsay-api-js) for `Sendsay` API in test mode. The app utilizes `React`, `Redux`, `Redux-Thunk`, unit and integration tests based on `Jest` and `Enzyme`.
 
 ## Main scripts
 ### Install dependencies
