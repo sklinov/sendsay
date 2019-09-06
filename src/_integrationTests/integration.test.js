@@ -1,47 +1,37 @@
-import configureStore from 'redux-mock-store'
-import thunk from 'redux-thunk'
-
-
 import SendMessageSendsay from '../utils/sendMessage'
-//import {testStore} from '../utils'
-import {sendMessage, getStatus, newMessage} from '../redux/actions/messageActions'
-
-const middlewares = [thunk] // add your middlewares like `redux-thunk`
-const mockStore = configureStore(middlewares)
-
-
+import {testStore} from '../utils'
+import {sendMessage } from '../redux/actions/messageActions'
 
 jest.mock('../utils/sendMessage');
 
 describe('sendMessage action', ()=> {
-
     const message = {
-        subject: 'Тема сообщения',
-        toEmail: 'sergeyklinov@gmail.com'
+        subject: 'Message subject',
+        toEmail: 'receiver@fakegmail.com'
     }
 
     test('Send message: Should update store correctly', () => {
-        //const date = new Date();
-        const store = mockStore({})
-        //const store = testStore();
+        const store = testStore();
         const referenceState = {
             messages: {
               messages: [
                 {
-                  date: '2019-08-30T11:36:14.813Z',
-                  subject: 'Тема сообщения',
+                  subject: 'Message subject',
                   trackId: '95'
                 }
               ],
               isSent: true,
-              prevToEmail: 'sergeyklinov@gmail.com'
+              prevToEmail: 'receiver@fakegmail.com'
             }
           }
-        SendMessageSendsay.mockResolvedValue({'track.id' : '95' })
-        store.dispatch(sendMessage(message))
-        const newState = store.getState();
-        console.log(newState);
-        expect(newState).toBe(referenceState);      
+        
+        SendMessageSendsay.mockResolvedValue({'track.id' : '95' })       
+        
+        return store.dispatch(sendMessage(message))
+        .then(() => {
+          const newState = store.getState();
+          expect(newState).toMatchObject(referenceState); 
+        })
         
     })
 });

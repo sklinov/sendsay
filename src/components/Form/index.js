@@ -26,9 +26,10 @@ const initialState = {
     toEmail: "",
     subject: "",
     messageText: "",
+    isSending: false
 }
 
-class Form extends Component {
+export class Form extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -48,6 +49,7 @@ class Form extends Component {
                 messageText: false,
             },
             formIsValid: false,
+            isSending: false
         }
         this.validateField = validateField.bind(this, this.state)
         this.checkFilesExtAndSize = checkFilesExtAndSize.bind(this, this.state)
@@ -124,6 +126,7 @@ class Form extends Component {
             messageText: this.state.messageText,
             files: this.state.files,
         };
+        this.setState({isSending: true})
         this.props.sendMessage(message);
     }
 
@@ -137,7 +140,7 @@ class Form extends Component {
     }
 
     render() {
-        const { fromName, fromEmail, toName, toEmail, subject, messageText, files, validationErrors, formIsValid } = this.state;
+        const { fromName, fromEmail, toName, toEmail, subject, messageText, files, validationErrors, formIsValid, isSending } = this.state;
         if(this.props.isSent) {
             const regex = /[*][*][*]/
             let message = form.messageQueuedExtra.replace(regex, this.props.prevToEmail);
@@ -303,7 +306,7 @@ class Form extends Component {
                                     <button
                                         className="form__button"
                                         onClick={this.submitForm}
-                                        disabled={!formIsValid}
+                                        disabled={!formIsValid || isSending}
                                     >
                                         {form.buttonSubmitLabel}
                                     </button>

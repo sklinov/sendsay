@@ -28,7 +28,6 @@ export default function sendMessageSendsay(message) {
       };
       var req = sendsay.request(fullMessage);
       req.then(function(res) {
-        console.log(res);
         resolve(res);
       });
 

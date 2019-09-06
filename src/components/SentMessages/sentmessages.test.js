@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { findByTestAttr} from '../../utils/index';
-import SentMessages from './index';
+import { SentMessages } from './index';
 
 const setup = (props={}) => {
     const component = shallow(<SentMessages {...props} />);
@@ -12,31 +12,34 @@ describe('Sent Messages ---',() => {
     let component;
     
     describe('Renders:', () => {
-        it('renders without props',()=> {
-            component = setup();
+        it('renders with empty messages props',()=> {
+            const props = {
+                messages: []
+            }
+            component = setup(props);
             const wrapper = findByTestAttr(component, 'none');
             expect(wrapper.length).toEqual(1);
         });
 
-        it('renders with sentMessages props',()=> {
+        it('renders with messages props',()=> {
             const props = 
             {
-                sentMessages: [
-                    {
-                        date: "10 сентября" , 
+                messages: [
+                    {   
+                        trackId: 5,
+                        date: new Date() , 
                         subject: "Тестовая тема" ,
-                        status: "Тестовый статус"
+                        status: 0
                     },
-                    {
-                        date: "12 сентября" , 
+                    {   
+                        trackId: 777,
+                        date: new Date() , 
                         subject: "Тестовая тема" ,
-                        status: "Тестовый статус"
+                        status: -1
                     },
                 ]
             }
-            ;
-            const length = props.sentMessages.length;
-            console.log("length: ",length);
+            const length = props.messages.length;
             component = setup(props);
             const wrapper = findByTestAttr(component, 'message_item');
             expect(wrapper.length).toEqual(length);

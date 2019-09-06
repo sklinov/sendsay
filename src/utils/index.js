@@ -1,5 +1,5 @@
 import { applyMiddleware, createStore, compose } from 'redux'
-import rootReducer from '../redux/reducers'
+import RootReducer from '../redux/reducers'
 import { middleWares } from '../redux/store/createStore' 
 
 
@@ -8,9 +8,9 @@ export const findByTestAttr = (component, attr) => {
     return wrapper;
 }
 
-export const testStore = () => {
+export function testStore() {
     const initialState={};
-    const store = createStore(rootReducer, 
+    const store = createStore(RootReducer, 
         initialState,
         compose(
             applyMiddleware(...middleWares)
@@ -18,3 +18,4 @@ export const testStore = () => {
         return store;
 }
 
+ 

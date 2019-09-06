@@ -9,31 +9,13 @@ const setup = (props={}) => {
     return component;
 }
 
-const thunk = ({ dispatch, getState }) => next => action => {
-    if (typeof action === 'function') {
-      return action(dispatch, getState)
-    }
-  
-    return next(action)
-}
-
-const create = () => {
-    const store = {
-      getState: jest.fn(() => ({})),
-      dispatch: jest.fn()
-    }
-    const next = jest.fn()
-  
-    const invoke = action => thunk(store)(next)(action)
-  
-    return { store, next, invoke }
-  }
 
 describe('Form ---',() => {
     let component;
     beforeEach(() => {
         component = setup();
     })
+
     describe('Renders:', () => {
         it('renders main container',()=> {
             const wrapper = findByTestAttr(component, 'form');
@@ -114,16 +96,7 @@ describe('Form ---',() => {
             instance.validateForm()
             expect(component.state('formIsValid')).toBe(true);
         });
-        it('Process long file name', () => {
-            const filename = "filenamemorethantwentysymbols.jpg";
-            const instance = component.instance();
-            expect(instance.processFileName(filename)).toEqual('filenamemoret....jpg');
-        });
-        it('Leaves short file name', () => {
-            const filename = "filename.jpg";
-            const instance = component.instance();
-            expect(instance.processFileName(filename)).toEqual(filename);
-        });
+        
     });
     
 });

@@ -4,7 +4,7 @@ import { getStatus } from '../../redux/actions/messageActions'
 import './styles.css'
 import { msgLabels } from '../../languages/ru'
 
-class SentMessages extends Component {
+export class SentMessages extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -43,7 +43,6 @@ class SentMessages extends Component {
             statusName = 'В очереди';
             statusColor = '#DDDDDD';
         }
-        console.log(status, statusName, statusColor);
         return <span style={{color: statusColor}}>{statusName}</span>
     }
 
@@ -70,11 +69,12 @@ class SentMessages extends Component {
                         <tbody>
                             {
                                 messages.map(message => {
+                                    const messageStatus = this.processStatus(message.status)
                                     return (
                                         <tr data-test="message_item" key={message.trackId}>
                                             <td className="table__datecell">{message.date.toLocaleString('ru-RU',  {day: 'numeric', month: 'long'}) }</td>
                                             <td className="table__subjectcell">{message.subject}</td>
-                                            <td className="table__statuscell">{() => this.processStatus(message.status)}</td>
+                                            <td className="table__statuscell">{messageStatus}</td>
                                         </tr>
                                     )
                                 })
